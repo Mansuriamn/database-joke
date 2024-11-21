@@ -11,7 +11,11 @@ const _dirname = path.resolve();
 const app = express();
 
 // Configure CORS to allow requests from any origin
-app.use(cors());
+app.use(cors({
+  origin: '*',  // Be more restrictive in production
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
 
 app.use(express.json());
 app.use(express.static(path.join(_dirname, "/frontend/dist")));
@@ -23,11 +27,7 @@ const pool = mysql.createPool({
   user: process.env.DB_USER || 'boot',
   password: process.env.DB_PASSWORD || 'boot',
   database: process.env.DB_NAME || 'fun',
-  port: process.env.DB_PORT || 3306,
-  connectTimeout: 10000,
-  waitForConnections: true,
-  queueLimit: 0,
-  debug: process.env.NODE_ENV !== 'production'
+  
 });
 
 // Test database connection on startup
